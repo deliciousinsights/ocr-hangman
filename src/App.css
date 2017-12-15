@@ -1,28 +1,77 @@
-.App {
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.hangman {
+  padding: 1em;
+  background: white;
+  color: black;
+  font-family: 'Operator Mono SSm', 'Source Code Pro', 'DejaVu Sans Mono',
+    'Menlo', 'Monaco', 'Inconsolata', 'Consolas', monospace;
+  font-size: 32px;
+}
+
+.hangman .display {
   text-align: center;
+  letter-spacing: 0.1em;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.hangman .letters {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+.hangman .letters button {
+  width: 7.5%;
+  margin-bottom: 0.2em;
+  padding: 0.2em 0;
+  font-size: 1em;
+  border: 0.1em solid black;
+  border-radius: 0.2em;
+  background: white;
+}
+
+.hangman .letters button[disabled] {
+  border-color: silver;
+  color: silver;
+  cursor: not-allowed;
+}
+
+.hangman.won .display {
+  color: green;
+}
+
+.hangman.won .letters {
+  justify-content: space-around;
+}
+
+.hangman.won .letters button:not(.replay) {
+  border-color: #dfd;
+  color: #dfd;
+  cursor: not-allowed;
+}
+
+.hangman.won .letters button.replay {
+  width: auto;
+  border-color: green;
+  color: green;
+  padding: 0.2em 1em;
+}
+
+.hangman.won .letters button.replay:hover,
+.hangman.won .letters button.replay:active {
   color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  background: green;
 }
