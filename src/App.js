@@ -86,7 +86,7 @@ class App extends Component {
               Rejouer
             </button>
           ) : (
-            ALPHABET.map(letter => (
+            ALPHABET.map((letter) => (
               <button
                 disabled={usedLetters.has(letter)}
                 key={letter}
@@ -126,6 +126,6 @@ export default App
 function computeDisplay(phrase, usedLetters) {
   return phrase.replace(
     /\w/g,
-    letter => (usedLetters.has(letter) ? letter : '_')
+    (letter) => (usedLetters.has(letter) ? letter : '_')
   )
 }

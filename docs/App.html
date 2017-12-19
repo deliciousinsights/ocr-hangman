@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><title>App</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="App"><meta name="groc-project-path" content="src/App.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/App.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="le-cur-de-lapplication">Le cœur de l’application</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./App.css'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Liste des caractères de l’alphabet, utilisée pour afficher la
+liste des boutons notamment.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-keyword">const</span> ALPHABET = <span class="hljs-string">'ABCDEFGHIJKLMNOPQRSTUVWXYZ'</span>.split(<span class="hljs-string">''</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Liste de phrases possibles à deviner.  On reste en 100%
+majuscules sans signes diacritiques pour faciliter la
+correspondance de frappe.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-keyword">const</span> PHRASES = <span class="hljs-string">`
+AVEC REACT LA VIE EST BELLE
+DOMMAGE ELIANE
+IL EST SYMPA CE PETIT EXO
+J’ADORE REACT !
+LA VIE L’UNIVERS ET LE RESTE
+OPENCLASSROOMS EST MON AMI
+`</span>
+  .trim()
+  .split(<span class="hljs-string">'\n'</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="le-composant-principal-de-lapplication">Le composant principal de l’application</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Mise en place de l’état initial dans <code>this.state</code>, via un
+initialiseur de champ d’instance (ES2018).</p></div></div><div class="code"><div class="wrapper">  state = <span class="hljs-keyword">this</span>.generateInitialState()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Construit un état initial de partie.  Utilisé pour initialiser
+<code>this.state</code> à la construction, mais aussi par la méthode métier
+<code>reset()</code>.</p></div></div><div class="code"><div class="wrapper">  generateInitialState() {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ol>
+<li>Choisir une phrase au hasard</li>
+</ol></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">const</span> phrase = PHRASES[<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * PHRASES.length)]</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ol>
+<li>En début de partie, aucune lettre n’a été tentée.  On utilise
+un <code>Set</code> (ES2015) plutôt qu’un tableau car <code>Set#has()</code> est en
+général plus performant que <code>Array#includes(…)</code> (ES2016).</li>
+</ol></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">const</span> usedLetters = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ol>
+<li>On calcule le texte de l’affichage principal.</li>
+</ol></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">const</span> display = computeDisplay(phrase, usedLetters)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Par ailleurs, en début de partie, on n’a par définition pas
+encore gagné…</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> { phrase, display, usedLetters, won: <span class="hljs-literal">false</span> }
+  }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Traitement d’un choix de lettre (activation d’un bouton
+de lettre, par exemple).</p></div></div><div class="code"><div class="wrapper">  handleLetter(letter) {
+    <span class="hljs-keyword">let</span> { phrase, display, usedLetters } = <span class="hljs-keyword">this</span>.state</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Si la lettre a déjà été tentée, ce <code>add()</code> sera sans effet
+(c’est le principe d’un <code>Set</code>).</p></div></div><div class="code"><div class="wrapper">    usedLetters.add(letter)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Recalcul de l’affichage principal</p></div></div><div class="code"><div class="wrapper">    display = computeDisplay(phrase, usedLetters)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>S’il ne reste aucun caractère souligné (<em>underscore</em>) dans
+l’affichage, c’est qu’on a gagné !</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">const</span> won = !display.includes(<span class="hljs-string">'_'</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Mise à jour de l’état local du composant, qui va déclencher
+un re-render.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">this</span>.setState({ display, usedLetters, won })
+  }
+
+  render() {
+    <span class="hljs-keyword">const</span> { display, usedLetters, won } = <span class="hljs-keyword">this</span>.state
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">className</span>=<span class="hljs-value">{`hangman</span> ${(<span class="hljs-attribute">won</span> &amp;&amp; '<span class="hljs-attribute">won</span>') || ''}`}&gt;</span>
+        {/* Un composant à part pour juste ce paragraphe serait superflu… */}
+        <span class="hljs-tag">&lt;<span class="hljs-title">p</span> <span class="hljs-attribute">className</span>=<span class="hljs-value">"display"</span>&gt;</span>{display}<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+        {/* En revanche, ce tableau de lettres serait probablement un composant
+            séparé dans une appli plus aboutie.  Ici, dans l’intérêt de la
+            rapidité de l’activité à réaliser, on est restés sur un seul
+            composant : `<span class="hljs-tag">&lt;<span class="hljs-title">App</span>/&gt;</span>`. */}
+        <span class="hljs-tag">&lt;<span class="hljs-title">p</span> <span class="hljs-attribute">className</span>=<span class="hljs-value">"letters"</span>&gt;</span>
+          {won ? (</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Ce bouton est (1) un composant natif, donc sans optimisation
+de re-rendu particulière, et (2) rendu une seule fois lorsqu’on
+a gagné la partie : le <code>reset()</code> va le virer.  Aucune véritable
+raison donc de sortir la fonction fléchée comme une méthode
+métier <em>bound</em>.</p></div></div><div class="code"><div class="wrapper">            &lt;button className=<span class="hljs-string">"replay"</span> onClick={() =&gt; <span class="hljs-keyword">this</span>.reset()}&gt;
+              Rejouer
+            &lt;<span class="hljs-regexp">/button&gt;
+          ) : (
+            ALPHABET.map((letter) =&gt; (
+              &lt;button
+                disabled={usedLetters.has(letter)}
+                key={letter}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Chaque bouton va être re-rendered quand on choisit une
+lettre, mais dans la mesure où il faut de toutes façons
+appeler la méthode avec la lettre en argument, on doit
+utiliser une fonction fléchée ici ; comme on appelle
+<code>handleLetter</code> en mode « sujet-verbe-complément », son
+<code>this</code> interne est garanti à l’exécution : c’est le
+<code>this</code> utilisé ici pour l’appel.</p></div></div><div class="code"><div class="wrapper">                onClick={() =&gt; <span class="hljs-keyword">this</span>.handleLetter(letter)}
+              &gt;
+                {letter}
+              &lt;<span class="hljs-regexp">/button&gt;
+            ))
+          )}
+        &lt;/</span>p&gt;
+      <span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+    )</span>
+  }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Réinitialisation du plateau pour une nouvelle partie.</p></div></div><div class="code"><div class="wrapper">  reset() {
+    <span class="hljs-keyword">this</span>.setState(<span class="hljs-keyword">this</span>.generateInitialState())
+  }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="fonctions-dassistance">Fonctions d’assistance</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Produit une représentation textuelle de l’état de la partie,
+chaque lettre non découverte étant représentée par un <em>underscore</em>.
+(CSS assurera de l’espacement entre les lettres pour mieux
+visualiser le tout).</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">computeDisplay</span>(<span class="hljs-params">phrase, usedLetters</span>) </span>{
+  <span class="hljs-keyword">return</span> phrase.replace(
+    <span class="hljs-regexp">/\w/g</span>,
+    (letter) =&gt; (usedLetters.has(letter) ? letter : <span class="hljs-string">'_'</span>)
+  )
+}</div></div></div></div></body></html>
